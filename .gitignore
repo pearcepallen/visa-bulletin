@@ -1,2 +1,3 @@
 .env
 visa-env/
+backend/db.sqlite3
