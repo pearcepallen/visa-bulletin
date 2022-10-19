@@ -16,5 +16,5 @@ class Bulletin(models.Model):
 class Email(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     name = models.CharField(max_length=200, null=True, blank=True)
-    email = models.CharField(max_length=200, null=False, unique=True)
+    email = models.EmailField(max_length=200, null=False, unique=True)
 
