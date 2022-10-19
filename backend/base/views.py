@@ -4,40 +4,46 @@ from django.core.mail import EmailMessage, send_mail
 from django.http import HttpResponse
 from django.conf import settings as conf_settings
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
 from datetime import date
+
+from base.models import *
 
 import json
 import datetime
 import requests
 
 # Create your views here.
+@api_view(['POST'])
+def addEmail(request):
+    data = request.data
+    try:
+        email = Email.objects.create(
+            name = data['name'],
+            email = data['email']
+        )
+        return Response({
+            'message':'You have successfully subscribed to email list'
+            })
+    except:
+        return Response({
+            'message':'Email already subscribed'
+            })
 
-def getBulletin(request):
-    defaultString = 'https://travel.state.gov/content/dam/visas/Bulletins/visabulletin_%20October2022.pdf'
-    today = date.today()
-    nextMonthDate = (today.replace(day=1) + datetime.timedelta(days=32)).replace(day=1)
-    nextMonth = nextMonthDate.strftime('%B')
-    nextMonthYear = nextMonthDate.strftime('%Y')
-    upcomingDate = nextMonth+nextMonthYear
-    upcoming = defaultString.replace('October2022', upcomingDate)
-    pdf = requests.get(upcoming)
-    if pdf:
-        if pdf.status_code != '404':
-            sendEmail(pdf.content, nextMonthDate)
-    # sendEmail(pdf.content, nextMonthDate)
-    # return HttpResponse(status=404)
-    return JsonResponse("Good", safe=False)
-
-def sendEmail(content, date):
-    emailList = json.loads(conf_settings.EMAIL_LIST)
-    name = f'Visa Bulletin {date.strftime("%B %Y")}'
-    email = EmailMessage(
-        name,
-        f'Please see attached for {name}.',
-        'from@example.com',
-        emailList,
-    )
-    email.attach(f'{name}.pdf', content)
-    email.send(fail_silently=False)
+@api_view(['POST'])
+def removeEmail(request):
+    data = request.data
+    try:
+        email = Email.objects.get(email = data['email'])
+        return Response({
+            'message':'You have successfully usubscribed from the email list'
+            })
+    except:
+        return Response({
+            'message':'Email was not found'
+            })
 
 
