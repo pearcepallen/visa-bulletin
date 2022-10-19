@@ -41,10 +41,30 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_q',
+    'rest_framework',
+
     'base.apps.BaseConfig',
 ]
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    
+}
+
+# Configure your Q cluster
+# More details https://django-q.readthedocs.io/en/latest/configure.html
+Q_CLUSTER = {
+    'name': 'base',
+    'retry': 90,
+    'timeout': 60,
+    'orm': 'default',  # Use Django's ORM + database for broker
+}
+
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
