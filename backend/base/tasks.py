@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.mail import EmailMessage, send_mail
 from django.http import HttpResponse
-from django.conf import settings as conf_settings
 
 from datetime import date
 
@@ -39,7 +38,10 @@ def getBulletin():
                 )
 
 def sendEmail(content, date):
-    emailList = json.loads(conf_settings.EMAIL_LIST)
+    emailList = []
+    emails = Email.objects.all()
+    for email in emails:
+        emailList.append(email.email)
     name = f'Visa Bulletin {date.strftime("%B %Y")}'
     email = EmailMessage(
         name,
