@@ -1,13 +1,10 @@
 from django.shortcuts import render
-from django.http import JsonResponse
 from django.core.mail import EmailMessage, send_mail
-from django.http import HttpResponse
 
 from datetime import date
 
 from base.models import *
 
-import json
 import datetime
 import requests
 
